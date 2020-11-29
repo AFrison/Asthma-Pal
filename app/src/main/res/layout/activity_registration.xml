@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.Asthma_Pal.RegistrationActivity">
+    tools:context="com.AP.Asthma_Pal.RegistrationActivity">
 
     <EditText
         android:id="@+id/etPassword"

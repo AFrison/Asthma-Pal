@@ -1,4 +1,4 @@
-package com.example.Asthma_Pal;
+package com.AP.Asthma_Pal;
 
 public class JournalEntry {
 

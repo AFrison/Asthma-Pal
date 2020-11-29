@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.Asthma_Pal">
+    package="com.AP.Asthma_Pal">
 
     <application
         android:allowBackup="true"
@@ -10,21 +10,21 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
-        <activity android:name=".JournalHistoryActivity"></activity>
-        <activity android:name=".DailySymptomsActivity" />
-        <activity android:name=".Predicteds" />
-        <activity android:name=".toContinueActivity" />
+        <activity android:name="com.AP.Asthma_Pal.JournalHistoryActivity"></activity>
+        <activity android:name="com.AP.Asthma_Pal.DailySymptomsActivity" />
+        <activity android:name="com.AP.Asthma_Pal.Predicteds" />
+        <activity android:name="com.AP.Asthma_Pal.toContinueActivity" />
 
-        <activity android:name=".PhysicianRegistration"></activity>
-        <activity android:name=".PhysicianInformation" />
-        <activity android:name=".InformationActivity" />
+        <activity android:name="com.AP.Asthma_Pal.PhysicianRegistration"></activity>
+        <activity android:name="com.AP.Asthma_Pal.PhysicianInformation" />
+        <activity android:name="com.AP.Asthma_Pal.InformationActivity" />
 
-        <activity android:name=".RegistrationActivity" />
-        <activity android:name=".DailyEntryActivity" />
-        <activity android:name=".ChartActivity" />
-        <activity android:name=".SettingsActivity" />
-        <activity android:name=".MainActivity" />
-        <activity android:name=".LoginActivity">
+        <activity android:name="com.AP.Asthma_Pal.RegistrationActivity" />
+        <activity android:name="com.AP.Asthma_Pal.DailyEntryActivity" />
+        <activity android:name="com.AP.Asthma_Pal.ChartActivity" />
+        <activity android:name="com.AP.Asthma_Pal.SettingsActivity" />
+        <activity android:name="com.AP.Asthma_Pal.MainActivity" />
+        <activity android:name="com.AP.Asthma_Pal.LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
