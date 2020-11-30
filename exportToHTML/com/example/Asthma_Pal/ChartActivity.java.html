@@ -1,0 +1,174 @@
+<html>
+<head>
+<title>ChartActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+ChartActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.jjoe64.graphview.DefaultLabelFormatter</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.jjoe64.graphview.GraphView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.jjoe64.graphview.series.DataPoint</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.jjoe64.graphview.series.LineGraphSeries</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.text.SimpleDateFormat</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.ArrayList</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Date</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">ChartActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s0">private </span><span class="s1">GraphView graphview</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">LineGraphSeries&lt;DataPoint&gt; series</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SimpleDateFormat sdf = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd  </span><span class="s0">\n </span><span class="s2">aa&quot;</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s0">private double</span><span class="s1">[][] graphValues</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Button update</span><span class="s0">, </span><span class="s1">back</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">EditText Yvalue</span><span class="s0">;</span>
+    <span class="s0">private int </span><span class="s1">clickNumber</span><span class="s0">;</span>
+    <span class="s1">DatabaseHelper2 db</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">ArrayList&lt;Double&gt; mPeak</span><span class="s0">, </span><span class="s1">mDate</span><span class="s0">;</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_chart)</span><span class="s0">;</span>
+
+        <span class="s1">graphview = (GraphView) findViewById(R.id.graph)</span><span class="s0">;</span>
+        <span class="s1">update = findViewById(R.id.btnAddtoGraph)</span><span class="s0">;</span>
+        <span class="s1">Yvalue = findViewById(R.id.etYvalue)</span><span class="s0">;</span>
+        <span class="s1">activateScroll()</span><span class="s0">;</span>
+        <span class="s1">clickNumber = </span><span class="s3">0</span><span class="s0">;</span>
+        <span class="s1">back = findViewById(R.id.btnBackToMenu)</span><span class="s0">;</span>
+        <span class="s1">series = </span><span class="s0">new </span><span class="s1">LineGraphSeries&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">mPeak = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+        <span class="s1">mDate = </span><span class="s0">new </span><span class="s1">ArrayList&lt;&gt;()</span><span class="s0">;</span>
+
+        <span class="s1">graphview.getGridLabelRenderer().setLabelFormatter(</span><span class="s0">new </span><span class="s1">DefaultLabelFormatter()</span>
+        <span class="s1">{</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public </span><span class="s1">String formatLabel(</span><span class="s0">double </span><span class="s1">value</span><span class="s0">, boolean </span><span class="s1">isValueX) {</span>
+                <span class="s0">if</span><span class="s1">(isValueX){</span>
+                    <span class="s0">return </span><span class="s1">sdf.format(</span><span class="s0">new </span><span class="s1">Date((</span><span class="s0">long</span><span class="s1">) value))</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else</span><span class="s1">{</span>
+                <span class="s0">return super</span><span class="s1">.formatLabel(value</span><span class="s0">, </span><span class="s1">isValueX)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">graphview.getGridLabelRenderer().setNumHorizontalLabels(</span><span class="s3">3</span><span class="s1">)</span><span class="s0">;</span>
+
+
+        <span class="s1">db = </span><span class="s0">new </span><span class="s1">DatabaseHelper2(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">Cursor data = db.getListContents()</span><span class="s0">;</span>
+
+
+        <span class="s0">if</span><span class="s1">(data.getCount() == </span><span class="s3">0</span><span class="s1">){</span>
+        <span class="s1">}</span>
+        <span class="s0">else </span><span class="s1">{</span>
+            <span class="s0">while </span><span class="s1">(data.moveToNext()) {</span>
+                <span class="s1">mDate.add(data.getDouble(</span><span class="s3">0</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">mPeak.add(data.getDouble(</span><span class="s3">1</span><span class="s1">))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s0">for </span><span class="s1">(</span><span class="s0">int </span><span class="s1">i = </span><span class="s3">0</span><span class="s0">; </span><span class="s1">i &lt; mDate.size()</span><span class="s0">; </span><span class="s1">i++) {</span>
+                <span class="s1">series.appendData(</span><span class="s0">new </span><span class="s1">DataPoint(mDate.get(i)</span><span class="s0">, </span><span class="s1">mPeak.get(i))</span><span class="s0">,true, </span><span class="s3">1000</span><span class="s1">)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+
+            <span class="s1">graphview.addSeries(series)</span><span class="s0">;</span>
+
+            <span class="s0">if</span><span class="s1">(mDate.size() &lt;= </span><span class="s3">10</span><span class="s1">) {</span>
+                <span class="s1">graphview.getViewport().setMaxX(mDate.get(mDate.size() - </span><span class="s3">1</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">graphview.getViewport().setMinX(mDate.get(</span><span class="s3">0</span><span class="s1">))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s0">else</span><span class="s1">{</span>
+                <span class="s1">graphview.getViewport().setMaxX(mDate.get(mDate.size() - </span><span class="s3">1</span><span class="s1">))</span><span class="s0">;</span>
+                <span class="s1">graphview.getViewport().setMinX(mDate.get(mDate.size() - </span><span class="s3">11</span><span class="s1">))</span><span class="s0">;</span>
+            <span class="s1">}</span>
+            <span class="s1">graphview.getViewport().setXAxisBoundsManual(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s1">init()</span><span class="s0">;</span>
+
+        <span class="s1">back.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                <span class="s0">if</span><span class="s1">(MainActivity.active){</span>
+                    <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(ChartActivity.</span><span class="s0">this, </span><span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">MainActivity.MA.finish()</span><span class="s0">;</span>
+                    <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                    <span class="s1">finish()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else </span><span class="s1">{</span>
+                    <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(ChartActivity.</span><span class="s0">this, </span><span class="s1">MainActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">DailyEntryActivity.DA.finish()</span><span class="s0">;</span>
+                    <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                    <span class="s1">finish()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">init(){</span>
+
+        <span class="s1">update.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s0">if</span><span class="s1">(!Yvalue.getText().toString().equals(</span><span class="s2">&quot;&quot;</span><span class="s1">)){</span>
+                    <span class="s0">double </span><span class="s1">y = Double.parseDouble(Yvalue.getText().toString())</span><span class="s0">;</span>
+                    <span class="s0">long </span><span class="s1">xdate = </span><span class="s0">new </span><span class="s1">Date().getTime()</span><span class="s0">;</span>
+                    <span class="s1">Toast.makeText(ChartActivity.</span><span class="s0">this, </span><span class="s2">&quot;&quot;</span><span class="s1">+y</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                    <span class="s1">DataPoint data = </span><span class="s0">new </span><span class="s1">DataPoint(xdate</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span>
+                    <span class="s1">series.appendData(data</span><span class="s0">, true, </span><span class="s3">1000</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">graphview.addSeries(series)</span><span class="s0">;</span>
+                    <span class="s1">graphview.getViewport().setMaxX(xdate)</span><span class="s0">;</span>
+                    <span class="s1">addData(xdate</span><span class="s0">, </span><span class="s1">y)</span><span class="s0">;</span>
+                <span class="s1">}</span>
+                <span class="s0">else</span>
+                    <span class="s1">Toast.makeText(ChartActivity.</span><span class="s0">this, </span><span class="s2">&quot;Please Enter a value&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private void </span><span class="s1">activateScroll() {</span>
+        <span class="s4">// activate horizontal zooming and scrolling</span>
+        <span class="s1">graphview.getViewport().setScalable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">// activate horizontal scrolling</span>
+        <span class="s1">graphview.getViewport().setScrollable(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">// activate horizontal and vertical zooming and scrolling</span>
+        <span class="s1">graphview.getViewport().setScalableY(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s4">// activate vertical scrolling</span>
+        <span class="s1">graphview.getViewport().setScrollableY(</span><span class="s0">true</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">addData(</span><span class="s0">double </span><span class="s1">date</span><span class="s0">, double </span><span class="s1">peak) {</span>
+        <span class="s1">db.insertData(date</span><span class="s0">, </span><span class="s1">peak)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

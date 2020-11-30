@@ -1,0 +1,84 @@
+<html>
+<head>
+<title>InformationActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #6897bb;}
+.s4 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+InformationActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.BufferedReader</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.File</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.FileInputStream</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.FileNotFoundException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.InputStreamReader</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.nio.charset.StandardCharsets</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">InformationActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s0">private </span><span class="s1">String filename = </span><span class="s2">&quot;PersonalInformation&quot;</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">TextView textViewCountry</span><span class="s0">, </span><span class="s1">textViewFirstName</span><span class="s0">, </span><span class="s1">textViewLastName</span><span class="s0">, </span><span class="s1">textViewPhone</span><span class="s0">, </span><span class="s1">textViewEmail</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SharedPreferences mPreferences</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Button physinfo</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String sharedPrefFile = </span><span class="s2">&quot;com.AP.Asthma_Pal.sharedPreferences&quot;</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String defVal = </span><span class="s2">&quot;NULL&quot;</span><span class="s0">;</span>
+
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.KITKAT)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_information)</span><span class="s0">;</span>
+
+        <span class="s0">int </span><span class="s1">phonenum = </span><span class="s3">0</span><span class="s0">;</span>
+
+        <span class="s1">mPreferences = getSharedPreferences(sharedPrefFile</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+        <span class="s1">physinfo = findViewById(R.id.btnPhysInfo)</span><span class="s0">;</span>
+        <span class="s1">textViewCountry = findViewById(R.id.txtCountry)</span><span class="s0">;</span>
+        <span class="s1">textViewFirstName = findViewById(R.id.txtFirstName)</span><span class="s0">;</span>
+        <span class="s1">textViewLastName = findViewById(R.id.txtLastName)</span><span class="s0">;</span>
+        <span class="s1">textViewPhone = findViewById(R.id.txtPhoneNumber)</span><span class="s0">;</span>
+        <span class="s1">textViewEmail = findViewById(R.id.txtEmail)</span><span class="s0">;</span>
+
+
+        <span class="s1">phonenum = mPreferences.getInt(</span><span class="s2">&quot;com.AP.Asthma_Pal.phone&quot;</span><span class="s0">, </span><span class="s3">0</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s1">textViewCountry.setText(mPreferences.getString(</span><span class="s2">&quot;com.AP.Asthma_Pal.Country&quot;</span><span class="s0">, </span><span class="s1">defVal))</span><span class="s0">;</span>
+        <span class="s1">textViewFirstName.setText(mPreferences.getString(</span><span class="s2">&quot;com.AP.Asthma_Pal.FirstName&quot;</span><span class="s0">, </span><span class="s1">defVal))</span><span class="s0">;</span>
+        <span class="s1">textViewLastName.setText(mPreferences.getString(</span><span class="s2">&quot;com.AP.Asthma_Pal.LastName&quot;</span><span class="s0">, </span><span class="s1">defVal))</span><span class="s0">;</span>
+        <span class="s1">textViewPhone.setText(phonenum)</span><span class="s0">;</span>
+        <span class="s1">textViewEmail.setText(mPreferences.getString(</span><span class="s2">&quot;com.AP.Asthma_Pal.Email&quot;</span><span class="s0">, </span><span class="s1">defVal))</span><span class="s0">;</span>
+<span class="s4">/* 
+        physinfo.setOnClickListener(new View.OnClickListener() { 
+            @Override 
+            public void onClick(View v) { 
+                Intent physInformation = new Intent(InformationActivity.this, PhysicianInformation.class); 
+                startActivity(physInformation); 
+            } 
+        }); 
+*/</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

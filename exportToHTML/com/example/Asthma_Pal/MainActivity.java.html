@@ -1,0 +1,121 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.app.Activity</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseUser</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+
+    <span class="s0">private </span><span class="s1">Button settings</span><span class="s0">, </span><span class="s1">journal</span><span class="s0">, </span><span class="s1">graph</span><span class="s0">, </span><span class="s1">meds</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">Activity MA</span><span class="s0">;</span>
+    <span class="s0">public static boolean </span><span class="s1">active</span><span class="s0">;</span>
+    <span class="s1">DatabaseHelper db</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth LoginDatabase</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStart() {</span>
+        <span class="s0">super</span><span class="s1">.onStart()</span><span class="s0">;</span>
+        <span class="s1">active = </span><span class="s0">true;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onStop() {</span>
+        <span class="s0">super</span><span class="s1">.onStop()</span><span class="s0">;</span>
+        <span class="s1">active = </span><span class="s0">false;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private </span><span class="s1">Button Logout</span><span class="s0">, </span><span class="s1">PersonalInformation</span><span class="s0">, </span><span class="s1">Journal</span><span class="s0">, </span><span class="s1">Chart</span><span class="s0">, </span><span class="s1">Medication</span><span class="s0">, </span><span class="s1">Settings</span><span class="s0">;</span>
+    <span class="s0">public static </span><span class="s1">Activity RA</span><span class="s0">;</span>
+
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_main_page)</span><span class="s0">;</span>
+
+        <span class="s1">journal = findViewById(R.id.btnViewJournal)</span><span class="s0">;</span>
+        <span class="s1">graph = findViewById(R.id.btnViewChart)</span><span class="s0">;</span>
+        <span class="s1">MA = </span><span class="s0">this;</span>
+        <span class="s1">db = </span><span class="s0">new </span><span class="s1">DatabaseHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s2">//Connect to database</span>
+        <span class="s1">LoginDatabase = FirebaseAuth.getInstance()</span><span class="s0">;</span>
+
+        <span class="s2">//See if a User has already signed into the app</span>
+        <span class="s1">FirebaseUser user = LoginDatabase.getCurrentUser()</span><span class="s0">;</span>
+
+        <span class="s1">journal.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">DailyEntryActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">graph.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">ChartActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s2">//create variables for all of the buttons to use with onclick listeners</span>
+        <span class="s1">RA = </span><span class="s0">this;</span>
+        <span class="s1">Logout = (Button)findViewById(R.id.btnLogOut)</span><span class="s0">;</span>
+        <span class="s1">PersonalInformation = (Button)findViewById(R.id.btnViewInformation)</span><span class="s0">;</span>
+        <span class="s1">Journal = (Button)findViewById(R.id.btnViewJournal)</span><span class="s0">;</span>
+        <span class="s1">Chart = (Button)findViewById(R.id.btnViewChart)</span><span class="s0">;</span>
+        <span class="s1">Medication = (Button)findViewById(R.id.btnViewMeds)</span><span class="s0">;</span>
+        <span class="s1">Settings = (Button)findViewById(R.id.btnSettings)</span><span class="s0">;</span>
+
+        <span class="s2">//on click listener for the logout button, for now it just sends user to log-in page</span>
+        <span class="s2">//IMPLEMENT: logout of firebase eventually</span>
+        <span class="s1">Logout.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent logout = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">FirebaseAuth.getInstance().signOut()</span><span class="s0">;</span>
+                <span class="s1">startActivity(logout)</span><span class="s0">;</span>
+                <span class="s1">finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s2">//on click listener for user to go to their personal information page</span>
+        <span class="s1">PersonalInformation.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent personalInfo = </span><span class="s0">new </span><span class="s1">Intent(MainActivity.</span><span class="s0">this, </span><span class="s1">InformationActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">startActivity(personalInfo)</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+<span class="s1">}</span></pre>
+</body>
+</html>

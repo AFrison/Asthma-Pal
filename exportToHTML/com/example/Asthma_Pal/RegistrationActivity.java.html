@@ -1,0 +1,169 @@
+<html>
+<head>
+<title>RegistrationActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #808080;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+RegistrationActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.NonNull</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.annotation.RequiresApi</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.SharedPreferences</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Build</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.EditText</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Spinner</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.TextView</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.OnCompleteListener</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.gms.tasks.Task</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.AuthResult</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.firebase.auth.FirebaseAuth</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.io.File</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.FileNotFoundException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.FileOutputStream</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.io.IOException</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">RegistrationActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+
+    <span class="s2">//Initialize key variables</span>
+    <span class="s0">private </span><span class="s1">EditText Email</span><span class="s0">, </span><span class="s1">Password</span><span class="s0">, </span><span class="s1">ConPassword</span><span class="s0">, </span><span class="s1">FirstName</span><span class="s0">, </span><span class="s1">LastName</span><span class="s0">, </span><span class="s1">Phone</span><span class="s0">;</span>
+
+    <span class="s0">private </span><span class="s1">Button Register</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">TextView Return</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">FirebaseAuth UserAuth</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String filename = </span><span class="s3">&quot;PersonalInformation&quot;</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Spinner spinner</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SharedPreferences mPreferences</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String sharedPrefFile = </span><span class="s3">&quot;com.AP.Asthma_Pal.sharedPreferences&quot;</span><span class="s0">;</span>
+
+    <span class="s1">@RequiresApi(api = Build.VERSION_CODES.KITKAT)</span>
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s1">File file = </span><span class="s0">new </span><span class="s1">File(getApplicationContext().getFilesDir()</span><span class="s0">, </span><span class="s1">filename)</span><span class="s0">;</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_registration)</span><span class="s0">;</span>
+
+        <span class="s2">//Assign database</span>
+        <span class="s1">UserAuth = FirebaseAuth.getInstance()</span><span class="s0">;</span>
+
+        <span class="s2">//Assign key variables to views within activity</span>
+        <span class="s1">mPreferences = getSharedPreferences(sharedPrefFile</span><span class="s0">, </span><span class="s1">MODE_PRIVATE)</span><span class="s0">;</span>
+
+        <span class="s1">Password = findViewById(R.id.etPassword)</span><span class="s0">;</span>
+        <span class="s1">ConPassword = findViewById(R.id.etConfirmPassword)</span><span class="s0">;</span>
+        <span class="s1">Email = findViewById(R.id.etEmail)</span><span class="s0">;</span>
+        <span class="s1">Register = findViewById(R.id.btnRegister)</span><span class="s0">;</span>
+        <span class="s1">Return = findViewById(R.id.tvReturntoMenu)</span><span class="s0">;</span>
+        <span class="s1">spinner = findViewById(R.id.countrySelection)</span><span class="s0">;</span>
+        <span class="s1">FirstName = findViewById(R.id.etFirstName)</span><span class="s0">;</span>
+        <span class="s1">LastName = findViewById(R.id.etLastName)</span><span class="s0">;</span>
+        <span class="s1">Phone = findViewById(R.id.etPhone)</span><span class="s0">;</span>
+
+
+        <span class="s2">//Listen for a click on the register button</span>
+        <span class="s1">Register.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+
+                <span class="s2">//Make sure that fields are all utilized and passwords match by calling validate</span>
+                <span class="s0">if</span><span class="s1">(validate()){</span>
+                    <span class="s2">//Remove spaces from information</span>
+                   <span class="s1">String userPass = Password.getText().toString().trim()</span><span class="s0">;</span>
+                   <span class="s1">String userEmail = Email.getText().toString().trim()</span><span class="s0">;</span>
+                   <span class="s1">String userName = FirstName.getText().toString().trim()</span><span class="s0">;</span>
+                   <span class="s1">String userLast = LastName.getText().toString().trim()</span><span class="s0">;</span>
+                   <span class="s0">int </span><span class="s1">userPhone = Integer.parseInt(Phone.getText().toString().trim())</span><span class="s0">;</span>
+                   <span class="s1">String country = spinner.getSelectedItem().toString()</span><span class="s0">;</span>
+                   <span class="s1">mPreferences.edit().putString(</span><span class="s3">&quot;com.AP.Asthma_Pal.FirstName&quot;</span><span class="s0">, </span><span class="s1">userName).apply()</span><span class="s0">;</span>
+                   <span class="s1">mPreferences.edit().putString(</span><span class="s3">&quot;com.AP.Asthma_Pal.LastName&quot;</span><span class="s0">, </span><span class="s1">userLast).apply()</span><span class="s0">;</span>
+                   <span class="s1">mPreferences.edit().putString(</span><span class="s3">&quot;com.AP.Asthma_Pal.Email&quot;</span><span class="s0">, </span><span class="s1">userEmail).apply()</span><span class="s0">;</span>
+                   <span class="s1">mPreferences.edit().putString(</span><span class="s3">&quot;com.AP.Asthma_Pal.Country&quot;</span><span class="s0">, </span><span class="s1">country).apply()</span><span class="s0">;</span>
+                   <span class="s1">mPreferences.edit().putInt(</span><span class="s3">&quot;com.AP.Asthma_Pal.Phone&quot;</span><span class="s0">, </span><span class="s1">userPhone)</span><span class="s0">;</span>
+
+                   <span class="s2">//Add new user to the database</span>
+                   <span class="s1">UserAuth.createUserWithEmailAndPassword(userEmail</span><span class="s0">, </span><span class="s1">userPass).addOnCompleteListener(</span><span class="s0">new </span><span class="s1">OnCompleteListener&lt;AuthResult&gt;() {</span>
+                       <span class="s1">@Override</span>
+                       <span class="s0">public void </span><span class="s1">onComplete(@NonNull Task&lt;AuthResult&gt; task) {</span>
+                           <span class="s0">if</span><span class="s1">(task.isSuccessful()) {</span>
+                               <span class="s1">Toast.makeText(RegistrationActivity.</span><span class="s0">this, </span><span class="s3">&quot;Registration Successful&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                               <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(RegistrationActivity.</span><span class="s0">this, </span><span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                               <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                               <span class="s1">RegistrationActivity.</span><span class="s0">this</span><span class="s1">.finish()</span><span class="s0">;</span>
+                           <span class="s1">}</span>
+                           <span class="s0">else</span>
+                               <span class="s1">Toast.makeText(RegistrationActivity.</span><span class="s0">this, </span><span class="s3">&quot;Registration Unsuccessful&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                       <span class="s1">}</span>
+                   <span class="s1">})</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s2">//On click listener on text to allow the user to return to login</span>
+        <span class="s1">Return.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(RegistrationActivity.</span><span class="s0">this, </span><span class="s1">LoginActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">LoginActivity.RA.finish()</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">RegistrationActivity.</span><span class="s0">this</span><span class="s1">.finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">private boolean </span><span class="s1">validate(){</span>
+        <span class="s0">boolean </span><span class="s1">valid = </span><span class="s0">false;</span>
+
+        <span class="s1">String pass = Password.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">String conPass = ConPassword.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">String email = Email.getText().toString()</span><span class="s0">;</span>
+        <span class="s1">String userName = FirstName.getText().toString().trim()</span><span class="s0">;</span>
+        <span class="s1">String userLast = LastName.getText().toString().trim()</span><span class="s0">;</span>
+        <span class="s1">String country = spinner.getSelectedItem().toString()</span><span class="s0">;</span>
+
+        <span class="s0">if</span><span class="s1">(email.isEmpty() || pass.isEmpty()){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Please enter an Email and Password&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else if</span><span class="s1">(conPass.isEmpty()){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Please enter Confirmed Password&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else if</span><span class="s1">(!pass.equals(conPass)){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Password and Confirmed Password do not match&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else if</span><span class="s1">(userName.isEmpty()){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Please enter a first name&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else if</span><span class="s1">(userLast.isEmpty()){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Please enter a last name&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else if</span><span class="s1">(country.equals(</span><span class="s3">&quot;Country&quot;</span><span class="s1">)){</span>
+            <span class="s1">Toast.makeText(</span><span class="s0">this, </span><span class="s3">&quot;Please select a valid country&quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+        <span class="s1">}</span>
+        <span class="s0">else</span>
+            <span class="s1">valid = </span><span class="s0">true;</span>
+
+        <span class="s0">return </span><span class="s1">valid</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

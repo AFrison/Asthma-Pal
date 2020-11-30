@@ -1,0 +1,110 @@
+<html>
+<head>
+<title>DailySymptomsActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6a8759;}
+.s3 { color: #808080;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DailySymptomsActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.appcompat.app.AppCompatActivity</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.Intent</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.os.Bundle</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.view.View</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Button</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.widget.Toast</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">com.google.android.material.chip.Chip</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">com.google.android.material.chip.ChipGroup</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.text.SimpleDateFormat</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">java.util.Date</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">DailySymptomsActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity {</span>
+
+    <span class="s0">private </span><span class="s1">ChipGroup cough</span><span class="s0">, </span><span class="s1">wheeze</span><span class="s0">, </span><span class="s1">chest</span><span class="s0">, </span><span class="s1">sleep</span><span class="s0">, </span><span class="s1">exercise</span><span class="s0">, </span><span class="s1">meds</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Chip coughsel</span><span class="s0">, </span><span class="s1">wheezesel</span><span class="s0">, </span><span class="s1">chestsel</span><span class="s0">, </span><span class="s1">sleepsel</span><span class="s0">, </span><span class="s1">exercisesel</span><span class="s0">, </span><span class="s1">medssel</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">Button submit</span><span class="s0">, </span><span class="s1">back</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">String strcoughsel</span><span class="s0">, </span><span class="s1">strwheezesel</span><span class="s0">, </span><span class="s1">strchestsel</span><span class="s0">, </span><span class="s1">strsleepsel</span><span class="s0">, </span><span class="s1">strexercisesel</span><span class="s0">, </span><span class="s1">strmedssel</span><span class="s0">, </span><span class="s1">strDate</span><span class="s0">;</span>
+    <span class="s0">private </span><span class="s1">SimpleDateFormat sdf = </span><span class="s0">new </span><span class="s1">SimpleDateFormat(</span><span class="s2">&quot;MMM dd h:mm aa&quot;</span><span class="s1">)</span><span class="s0">;</span>
+    <span class="s1">DatabaseHelper db</span><span class="s0">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate(Bundle savedInstanceState) {</span>
+        <span class="s0">super</span><span class="s1">.onCreate(savedInstanceState)</span><span class="s0">;</span>
+        <span class="s1">setContentView(R.layout.activity_daily_symptoms)</span><span class="s0">;</span>
+        <span class="s1">back = findViewById(R.id.btnBack)</span><span class="s0">;</span>
+        <span class="s1">strcoughsel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">strchestsel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">strexercisesel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">strmedssel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">strsleepsel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+        <span class="s1">strwheezesel = </span><span class="s2">&quot;&quot;</span><span class="s0">;</span>
+
+        <span class="s1">cough = findViewById(R.id.chgCoughAnswer)</span><span class="s0">;</span>
+        <span class="s1">wheeze = findViewById(R.id.chgWheezeAnswer)</span><span class="s0">;</span>
+        <span class="s1">chest = findViewById(R.id.chgSleepAnswer)</span><span class="s0">;</span>
+        <span class="s1">sleep = findViewById(R.id.chgTightChestAnswer)</span><span class="s0">;</span>
+        <span class="s1">exercise = findViewById(R.id.chgStopExcerAnswer)</span><span class="s0">;</span>
+        <span class="s1">meds = findViewById(R.id.chgRescueMed)</span><span class="s0">;</span>
+        <span class="s1">submit = findViewById(R.id.btnSubmit)</span><span class="s0">;</span>
+        <span class="s1">db = </span><span class="s0">new </span><span class="s1">DatabaseHelper(</span><span class="s0">this</span><span class="s1">)</span><span class="s0">;</span>
+
+        <span class="s1">submit.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s1">coughsel = findViewById(cough.getCheckedChipId())</span><span class="s0">;</span>
+                <span class="s1">wheezesel = findViewById(wheeze.getCheckedChipId())</span><span class="s0">;</span>
+                <span class="s1">chestsel = findViewById(chest.getCheckedChipId())</span><span class="s0">;</span>
+                <span class="s1">sleepsel = findViewById(sleep.getCheckedChipId())</span><span class="s0">;</span>
+                <span class="s1">exercisesel = findViewById(exercise.getCheckedChipId())</span><span class="s0">;</span>
+                <span class="s1">medssel = findViewById(meds.getCheckedChipId())</span><span class="s0">;</span>
+
+                <span class="s0">if</span><span class="s1">(strcoughsel == </span><span class="s0">null </span><span class="s1">|| wheezesel == </span><span class="s0">null </span><span class="s1">|| chestsel == </span><span class="s0">null </span><span class="s1">|| sleepsel == </span><span class="s0">null </span><span class="s1">|| exercisesel == </span><span class="s0">null </span><span class="s1">|| medssel == </span><span class="s0">null</span><span class="s1">)</span>
+                    <span class="s1">Toast.makeText(DailySymptomsActivity.</span><span class="s0">this, </span><span class="s2">&quot;Please make sure all fields are</span><span class="s0">\n</span><span class="s2">filled before continuing &quot;</span><span class="s0">, </span><span class="s1">Toast.LENGTH_SHORT).show()</span><span class="s0">;</span>
+                <span class="s0">else</span><span class="s1">{</span>
+                    <span class="s1">strcoughsel = coughsel.getText().toString()</span><span class="s0">;</span>
+                    <span class="s1">strwheezesel = wheezesel.getText().toString()</span><span class="s0">;</span>
+                    <span class="s1">strchestsel = chestsel.getText().toString()</span><span class="s0">;</span>
+                    <span class="s1">strsleepsel = sleepsel.getText().toString()</span><span class="s0">;</span>
+                    <span class="s1">strexercisesel = exercisesel.getText().toString()</span><span class="s0">;</span>
+                    <span class="s1">strmedssel = medssel.getText().toString()</span><span class="s0">;</span>
+
+                    <span class="s1">strDate = sdf.format(</span><span class="s0">new </span><span class="s1">Date().getTime())</span><span class="s0">;</span>
+                    <span class="s1">addData(strDate</span><span class="s0">, </span><span class="s1">strcoughsel</span><span class="s0">, </span><span class="s1">strwheezesel</span><span class="s0">, </span><span class="s1">strchestsel</span><span class="s0">, </span><span class="s1">strsleepsel</span><span class="s0">, </span><span class="s1">strexercisesel</span><span class="s0">, </span><span class="s1">strmedssel)</span><span class="s0">;</span>
+                    <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(DailySymptomsActivity.</span><span class="s0">this, </span><span class="s1">JournalHistoryActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                    <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                    <span class="s1">finish()</span><span class="s0">;</span>
+                <span class="s1">}</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+
+        <span class="s1">back.setOnClickListener(</span><span class="s0">new </span><span class="s1">View.OnClickListener() {</span>
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onClick(View v) {</span>
+                <span class="s3">//addData(sdf.format(new Date().getTime()),strcoughsel, strwheezesel, strchestsel, strsleepsel, strexercisesel, strmedssel);</span>
+                <span class="s1">Intent intent = </span><span class="s0">new </span><span class="s1">Intent(DailySymptomsActivity.</span><span class="s0">this, </span><span class="s1">DailyEntryActivity.</span><span class="s0">class</span><span class="s1">)</span><span class="s0">;</span>
+                <span class="s1">DailyEntryActivity.DA.finish()</span><span class="s0">;</span>
+                <span class="s1">startActivity(intent)</span><span class="s0">;</span>
+                <span class="s1">finish()</span><span class="s0">;</span>
+            <span class="s1">}</span>
+        <span class="s1">})</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public void </span><span class="s1">addData(String date</span><span class="s0">, </span><span class="s1">String cough</span><span class="s0">, </span><span class="s1">String wheeze</span><span class="s0">, </span><span class="s1">String chest</span><span class="s0">, </span><span class="s1">String sleep</span><span class="s0">, </span><span class="s1">String exercise</span><span class="s0">, </span><span class="s1">String meds){</span>
+        <span class="s1">db.insertData(date </span><span class="s0">, </span><span class="s1">cough</span><span class="s0">, </span><span class="s1">wheeze</span><span class="s0">, </span><span class="s1">chest</span><span class="s0">, </span><span class="s1">sleep</span><span class="s0">, </span><span class="s1">exercise</span><span class="s0">, </span><span class="s1">meds)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>

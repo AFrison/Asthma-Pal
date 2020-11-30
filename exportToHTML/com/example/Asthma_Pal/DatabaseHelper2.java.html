@@ -1,0 +1,77 @@
+<html>
+<head>
+<title>DatabaseHelper2.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cc7832;}
+.s1 { color: #a9b7c6;}
+.s2 { color: #6897bb;}
+.s3 { color: #6a8759;}
+</style>
+</head>
+<body bgcolor="#2b2b2b">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+DatabaseHelper2.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com.AP.Asthma_Pal</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">android.content.ContentValues</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.content.Context</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.Cursor</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteDatabase</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteException</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.database.sqlite.SQLiteOpenHelper</span><span class="s0">;</span>
+<span class="s0">import </span><span class="s1">android.util.Log</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">androidx.annotation.Nullable</span><span class="s0">;</span>
+
+<span class="s0">import </span><span class="s1">java.util.Date</span><span class="s0">;</span>
+
+<span class="s0">public class </span><span class="s1">DatabaseHelper2 </span><span class="s0">extends </span><span class="s1">SQLiteOpenHelper {</span>
+    <span class="s0">private static final int </span><span class="s1">DATABASE_VERSION = </span><span class="s2">3</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String JOURNALHISTORY = </span><span class="s3">&quot;PeakFlow&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String ENTRYDATE = </span><span class="s3">&quot;Date&quot;</span><span class="s0">;</span>
+    <span class="s0">public static final </span><span class="s1">String PEAK = </span><span class="s3">&quot;Peak&quot;</span><span class="s0">;</span>
+
+    <span class="s0">public </span><span class="s1">DatabaseHelper2(@Nullable Context context) {</span>
+        <span class="s0">super</span><span class="s1">(context</span><span class="s0">, </span><span class="s1">JOURNALHISTORY</span><span class="s0">, null, </span><span class="s1">DATABASE_VERSION)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onCreate(SQLiteDatabase db) {</span>
+        <span class="s1">db.execSQL(</span><span class="s3">&quot;CREATE TABLE &quot; </span><span class="s1">+ JOURNALHISTORY + </span><span class="s3">&quot; (&quot; </span><span class="s1">+</span>
+                <span class="s1">ENTRYDATE + </span><span class="s3">&quot; real PRIMARY KEY, &quot; </span><span class="s1">+</span>
+                <span class="s1">PEAK + </span><span class="s3">&quot; real )&quot;</span><span class="s1">)</span><span class="s0">;</span>
+
+    <span class="s1">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">public void </span><span class="s1">onUpgrade(SQLiteDatabase sqLiteDatabase</span><span class="s0">, int </span><span class="s1">i</span><span class="s0">, int </span><span class="s1">i1) {</span>
+        <span class="s1">sqLiteDatabase.execSQL(</span><span class="s3">&quot;DROP TABLE IF EXISTS &quot; </span><span class="s1">+ JOURNALHISTORY)</span><span class="s0">;</span>
+        <span class="s1">onCreate(sqLiteDatabase)</span><span class="s0">;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public boolean </span><span class="s1">insertData(</span><span class="s0">double </span><span class="s1">date</span><span class="s0">, double </span><span class="s1">peak) {</span>
+        <span class="s1">SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase()</span><span class="s0">;</span>
+        <span class="s1">ContentValues contentValues = </span><span class="s0">new </span><span class="s1">ContentValues()</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(ENTRYDATE</span><span class="s0">, </span><span class="s1">date)</span><span class="s0">;</span>
+        <span class="s1">contentValues.put(PEAK</span><span class="s0">, </span><span class="s1">peak)</span><span class="s0">;</span>
+
+        <span class="s0">long </span><span class="s1">result = db.insert(JOURNALHISTORY</span><span class="s0">, null, </span><span class="s1">contentValues)</span><span class="s0">;</span>
+
+        <span class="s0">if </span><span class="s1">(result == -</span><span class="s2">1</span><span class="s1">)</span>
+            <span class="s0">return false;</span>
+        <span class="s0">else</span>
+            <span class="s0">return true;</span>
+    <span class="s1">}</span>
+
+    <span class="s0">public </span><span class="s1">Cursor getListContents() {</span>
+        <span class="s1">SQLiteDatabase db = </span><span class="s0">this</span><span class="s1">.getWritableDatabase()</span><span class="s0">;</span>
+        <span class="s1">Cursor data = db.rawQuery(</span><span class="s3">&quot;SELECT * FROM &quot; </span><span class="s1">+ JOURNALHISTORY</span><span class="s0">, null</span><span class="s1">)</span><span class="s0">;</span>
+        <span class="s0">return </span><span class="s1">data</span><span class="s0">;</span>
+    <span class="s1">}</span>
+<span class="s1">}</span></pre>
+</body>
+</html>
